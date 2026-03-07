@@ -5,11 +5,12 @@ Provides abstract base classes, concrete backend implementations, and response
 handlers for standardized communication with generative AI model providers.
 The backend system supports distributed execution across worker processes with
 pluggable response handlers for different API formats. Key components include
-the abstract Backend base class, OpenAI-compatible HTTP backend, and response
-handlers for processing streaming and non-streaming API responses.
+the abstract Backend base class, OpenAI-compatible HTTP backend, Ollama backend,
+and response handlers for processing streaming and non-streaming API responses.
 """
 
 from .backend import Backend, BackendType
+from .ollama import OllamaBackend
 from .openai import (
     AudioRequestHandler,
     ChatCompletionsRequestHandler,
@@ -24,6 +25,7 @@ __all__ = [
     "Backend",
     "BackendType",
     "ChatCompletionsRequestHandler",
+    "OllamaBackend",
     "OpenAIHTTPBackend",
     "OpenAIRequestHandler",
     "OpenAIRequestHandlerFactory",

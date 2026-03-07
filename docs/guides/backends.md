@@ -6,7 +6,36 @@ GuideLLM is designed to work with OpenAI-compatible HTTP servers, enabling seaml
 
 ### OpenAI-Compatible HTTP Servers
 
-GuideLLM supports OpenAI-compatible HTTP servers, which provide a standardized API for interacting with LLMs. This includes popular implementations such as [vLLM](https://github.com/vllm-project/vllm) and [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference). These servers allow GuideLLM to perform evaluations, benchmarks, and optimizations with minimal setup.
+GuideLLM supports OpenAI-compatible HTTP servers, which provide a standardized API for interacting with LLMs. This includes popular implementations such as [vLLM](https://github.com/vllm-project/vllm), [Text Generation Inference (TGI)](https://github.com/huggingface/text-generation-inference), and [Ollama](https://ollama.com). These servers allow GuideLLM to perform evaluations, benchmarks, and optimizations with minimal setup.
+
+### Ollama
+
+[Ollama](https://ollama.com) is a popular tool for running LLMs locally. Ollama provides OpenAI-compatible endpoints for chat and text completions, making it easy to use with GuideLLM.
+
+GuideLLM includes a dedicated `ollama` backend that:
+- Uses Ollama-specific API routes (e.g., `/api/tags` for model listing)
+- Handles Ollama's response format for model discovery
+- Supports all standard GuideLLM features (streaming, multimodal, etc.)
+
+To use GuideLLM with Ollama:
+
+```bash
+# Start Ollama server (if not already running)
+ollama serve
+
+# Pull a model (e.g., llama3.2)
+ollama pull llama3.2
+
+# Run a benchmark
+guidellm benchmark run \
+  --target "http://localhost:11434" \
+  --backend ollama \
+  --model llama3.2 \
+  --data "prompt_tokens=256,output_tokens=128" \
+  --profile sweep
+```
+
+The default Ollama port is `11434`. You can also use the generic `openai_http` backend with Ollama since Ollama supports OpenAI-compatible endpoints.
 
 ## Examples for Spinning Up Compatible Servers
 
@@ -40,7 +69,34 @@ docker run --gpus 1 -ti --shm-size 1g --ipc=host --rm -p 8080:80 \
 
 For more information on starting a TGI server, see the [TGI Documentation](https://huggingface.co/docs/text-generation-inference/index).
 
-### 3. llama.cpp
+### 3. Ollama
+
+[Ollama](https://ollama.com) makes it easy to run LLMs locally with a simple command-line interface and OpenAI-compatible API.
+
+First, [install Ollama](https://ollama.com/download) for your platform. Then start the server and pull a model:
+
+```bash
+# Start Ollama server
+ollama serve
+
+# Pull a model (in another terminal)
+ollama pull llama3.2
+```
+
+Now you can run benchmarks with GuideLLM:
+
+```bash
+guidellm benchmark run \
+  --target "http://localhost:11434" \
+  --backend ollama \
+  --model llama3.2 \
+  --data "prompt_tokens=256,output_tokens=128" \
+  --profile sweep
+```
+
+For more information, see the [Ollama Documentation](https://github.com/ollama/ollama/blob/main/docs/README.md).
+
+### 4. llama.cpp
 
 [llama.cpp](https://github.com/ggml-org/llama.cpp) provides lightweight, OpenAI-compatible server through its [llama-server](https://github.com/ggml-org/llama.cpp/blob/master/tools/server) tool.
 
